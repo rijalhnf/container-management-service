@@ -1,0 +1,42 @@
+services:
+    postgres:
+        image: postgres:16
+        container_name: customs_progres
+        restart: always
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: crud_db
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+    product-api:
+        build: ./product-api
+        container_name: product_api
+        restart: always
+        ports:
+            - "8888:8888"
+        environment:
+            APP_PORT: 8888
+            DB_HOST: postgres
+            DB_PORT: 5432
+            DB_USER: postgres
+            DB_PASSWORD: postgres
+            DB_NAME: crud_db
+            JWT_SECRET: change-this-to-a-strong-secret-in-production
+            CORS_ORIGIN: "*"
+        depends_on:
+            postgres:
+                condition: service_healthy
+volumes:
+    postgres_data:
+
+
+# docker compose up --build
+            
