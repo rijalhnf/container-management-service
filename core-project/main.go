@@ -16,7 +16,7 @@ import (
 func main() {
 
 	config.ConnectDatabase()
-	config.DB.AutoMigrate(&models.User{}, &models.Product{})
+	config.DB.AutoMigrate(&models.User{}, &models.Product{}, &models.ContainerType{}, &models.ShippingLine{}, &models.Port{}, &models.Voyage{}, &models.Container{})
 
 	r := gin.Default()
 	r.SetTrustedProxies([]string{"127.0.0.1"})

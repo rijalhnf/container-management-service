@@ -7,8 +7,8 @@ COPY go.sum* ./
 RUN go mod download
 
 COPY . .
-RUN go build -o product-api
+RUN go build -o core-project
 
 EXPOSE 8888
 
-CMD ["./product-api"]
+CMD ["./core-project"]

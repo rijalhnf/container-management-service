@@ -16,9 +16,9 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
-    product-api:
-        build: ./product-api
-        container_name: product_api
+    core-project:
+        build: ./core-project
+        container_name: core-project
         restart: always
         ports:
             - "8888:8888"

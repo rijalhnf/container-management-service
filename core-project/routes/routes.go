@@ -37,5 +37,13 @@ func SetupRoutes(router *gin.Engine) {
 		api.POST("products", controllers.CreateProduct)       // POST   /api/products
 		api.PUT("products/:id", controllers.UpdateProduct)    // PUT    /api/products/:id
 		api.DELETE("products/:id", controllers.DeleteProduct) // DELETE /api/products/:id
+		container := api.Group("/containers")
+		{
+			container.GET("", controllers.GetContainers)          // GET    /api/containers
+			container.GET("/:id", controllers.GetContainerByID)   // GET    /api/containers/:id
+			container.POST("", controllers.CreateContainer)       // POST   /api/containers
+			container.PUT("/:id", controllers.UpdateContainer)    // PUT    /api/containers/:id
+			container.DELETE("/:id", controllers.DeleteContainer) // DELETE /api/containers/:id
+		}
 	}
 }

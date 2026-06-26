@@ -284,6 +284,170 @@
       ]
     },
     {
+      "name": "Containers",
+      "item": [
+        {
+          "name": "Get All Containers",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/containers",
+            "description": "🔒 Protected — returns all containers.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Container by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/containers/1",
+            "description": "🔒 Protected — returns a single container by ID. Change `1` to a valid container ID.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Container (single)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/containers",
+            "description": "🔒 Protected — creates a single container.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"container_number\": \"CONT123456\",\n  \"container_type_id\": 1,\n  \"shipping_line_id\": 1,\n  \"port_id\": 1,\n  \"voyage_id\": 1,\n  \"status\": \"ARRIVED\",\n  \"created_by\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Containers (batch)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/containers",
+            "description": "🔒 Protected — creates multiple containers in a single request by sending an array.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  { \"container_number\": \"CONT000001\", \"container_type_id\": 1, \"shipping_line_id\": 1, \"port_id\": 1, \"voyage_id\": 1, \"status\": \"ARRIVED\", \"created_by\": 1 },\n  { \"container_number\": \"CONT000002\", \"container_type_id\": 2, \"shipping_line_id\": 2, \"port_id\": 2, \"voyage_id\": 2, \"status\": \"IN_TRANSIT\", \"created_by\": 1 },\n  { \"container_number\": \"CONT000003\", \"container_type_id\": 1, \"shipping_line_id\": 1, \"port_id\": 1, \"voyage_id\": 1, \"status\": \"DEPARTED\", \"created_by\": 1 }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Container",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/containers/1",
+            "description": "🔒 Protected — updates a container by ID. Change `1` to a valid container ID.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_TRANSIT\",\n  \"voyage_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Container",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/containers/1",
+            "description": "🔒 Protected — deletes a container by ID. Change `1` to a valid container ID.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Auth Errors (negative tests)",
       "item": [
         {
