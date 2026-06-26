@@ -18,6 +18,11 @@ func SetupRoutes(router *gin.Engine) {
 	// Swagger UI — publicly accessible
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	router.GET("/project-docs", func(c *gin.Context) {
+		c.Redirect(302, "/project-docs/index.html")
+	})
+	router.Static("/project-docs", "./static/project-docs")
+
 	// Public health check
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{

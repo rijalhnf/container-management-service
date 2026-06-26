@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Container Management Service — Dokumentasi</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div class="page">
+			<aside class="sidebar">
+				<div class="brand">
+					<div class="logo" aria-hidden="true"></div>
+					<div>
+						<h1>Dokumentasi Project</h1>
+						<p>Container Management Service</p>
+					</div>
+				</div>
+
+				<div class="quick-links">
+					<a class="btn primary" href="/swagger/index.html">Swagger UI</a>
+					<a class="btn" href="/health">Health</a>
+				</div>
+
+				<div class="toc-title">Daftar Isi</div>
+				<nav class="toc">
+					<a href="#ringkasan">Ringkasan</a>
+					<a href="#struktur">Struktur Folder</a>
+					<a href="#alur">Alur Arsitektur</a>
+					<a href="#validasi">Validasi</a>
+					<a href="#endpoint">Ringkasan Endpoint</a>
+					<a href="#env">Environment</a>
+				</nav>
+
+				<div class="hr"></div>
+				<p class="small muted">
+					Akses cepat:
+					<span class="mono">/project-docs</span> ·
+					<span class="mono">/swagger/index.html</span>
+				</p>
+			</aside>
+
+			<main class="content">
+				<header class="header">
+					<div>
+						<h2 class="m0">Container Management Service</h2>
+						<p class="meta">
+							Dokumentasi internal untuk struktur project, alur request, dan validasi yang
+							diterapkan.
+						</p>
+					</div>
+					<div class="badges">
+						<span class="badge ok">Go + Gin</span>
+						<span class="badge ok">PostgreSQL + GORM</span>
+						<span class="badge warn">JWT Protected APIs</span>
+						<span class="badge">Swagger tersedia</span>
+					</div>
+				</header>
+
+				<section id="ringkasan" class="section">
+					<h3>Ringkasan</h3>
+					<div class="grid-2">
+						<div class="card">
+							<h4>Tujuan</h4>
+							<p>
+								Memberikan gambaran cepat tentang struktur source code di folder
+								<span class="mono">core-project</span>, alur request dari router sampai DB,
+								dan validasi utama (ISO 6346, duplikasi, auth).
+							</p>
+						</div>
+						<div class="card">
+							<h4>Entry Point</h4>
+							<div class="kv">
+								<div><strong>Server</strong></div>
+								<div><span class="mono">main.go</span></div>
+								<div><strong>Routes</strong></div>
+								<div><span class="mono">routes/routes.go</span></div>
+								<div><strong>Swagger</strong></div>
+								<div><span class="mono">/swagger/index.html</span></div>
+								<div><strong>Docs HTML</strong></div>
+								<div><span class="mono">/project-docs</span></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="callout warn">
+						<strong>Catatan</strong>: Dokumentasi ini tidak menampilkan nilai credential/secret
+						mentah dari file <span class="mono">.env</span>. Gunakan placeholder saat
+						mendokumentasikan konfigurasi.
+					</div>
+				</section>
+
+				<section id="struktur" class="section">
+					<h3>Struktur Folder (core-project)</h3>
+					<p>
+						Struktur ini adalah ringkasan folder utama yang membentuk aplikasi Gin,
+						middleware, dan layer DB.
+					</p>
+					<div class="codeblock">
+						<pre><code>core-project/
+├─ config/
+│  └─ database.go
+├─ controllers/
+│  ├─ auth_controller.go
+│  ├─ container_controller.go
+│  ├─ container_type_controller.go
+│  ├─ port_controller.go
+│  ├─ shipping_line_controller.go
+│  └─ voyage_controller.go
+├─ docs/
+│  ├─ swagger.json
+│  ├─ swagger.yaml
+│  └─ docs.go
+├─ middleware/
+│  ├─ auth.go
+│  └─ cors.go
+├─ models/
+│  ├─ user.go
+│  ├─ container.go
+│  ├─ container_type.go
+│  ├─ port.go
+│  ├─ shipping_line.go
+│  └─ voyage.go
+├─ routes/
+│  └─ routes.go
+├─ static/
+│  └─ project-docs/
+│     ├─ index.html
+│     └─ styles.css
+├─ utils/
+│  ├─ jwt.go
+│  └─ container_validation.go
+├─ main.go
+└─ go.mod</code></pre>
+					</div>
+
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Folder/File</th>
+								<th>Tanggung Jawab</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><span class="mono">main.go</span></td>
+								<td>Bootstrapping server, connect DB, register routes, set timeout HTTP.</td>
+							</tr>
+							<tr>
+								<td><span class="mono">config/database.go</span></td>
+								<td>Koneksi PostgreSQL via GORM + AutoMigrate model.</td>
+							</tr>
+							<tr>
+								<td><span class="mono">routes/routes.go</span></td>
+								<td>Daftar endpoint public, protected API group, Swagger UI.</td>
+							</tr>
+							<tr>
+								<td><span class="mono">middleware/</span></td>
+								<td>CORS global dan JWT AuthMiddleware untuk group <span class="mono">/api</span>.</td>
+							</tr>
+							<tr>
+								<td><span class="mono">controllers/</span></td>
+								<td>Handler HTTP (CRUD & auth). Berinteraksi dengan <span class="mono">config.DB</span>.</td>
+							</tr>
+							<tr>
+								<td><span class="mono">models/</span></td>
+								<td>Struct model GORM, relasi, serta request struct untuk auth.</td>
+							</tr>
+							<tr>
+								<td><span class="mono">utils/</span></td>
+								<td>JWT token, validasi nomor container ISO 6346.</td>
+							</tr>
+							<tr>
+								<td><span class="mono">docs/</span></td>
+								<td>Swagger output (generated) untuk API documentation.</td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+
+				<section id="alur" class="section">
+					<h3>Alur Arsitektur Request</h3>
+					<p>
+						Secara garis besar, semua request akan melewati CORS middleware. Untuk endpoint di
+						bawah <span class="mono">/api</span>, request juga melewati JWT middleware.
+					</p>
+
+					<div class="flow">
+						<div class="step">
+							<h5>1) Client → Gin Router</h5>
+							<p>Request masuk ke Gin dan dicocokkan dengan route.</p>
+						</div>
+						<div class="step">
+							<h5>2) CORS Middleware (global)</h5>
+							<p>
+								Menambahkan header CORS dan menangani preflight <span class="mono">OPTIONS</span>.
+							</p>
+						</div>
+						<div class="step">
+							<h5>3) Public vs Protected Route</h5>
+							<p>
+								Public: <span class="mono">/health</span>, <span class="mono">/swagger</span>,
+								<span class="mono">/api/auth/login</span>, <span class="mono">/api/auth/register</span>,
+								<span class="mono">/project-docs</span>.
+							</p>
+						</div>
+						<div class="step">
+							<h5>4) JWT AuthMiddleware (protected)</h5>
+							<p>
+								Validasi header <span class="mono">Authorization: Bearer &lt;token&gt;</span>.
+								Inject claim (<span class="mono">userID/email/role</span>) ke context.
+							</p>
+						</div>
+						<div class="step">
+							<h5>5) Controller</h5>
+							<p>
+								Bind JSON, jalankan validasi bisnis (contoh: ISO 6346), akses DB via
+								<span class="mono">config.DB</span>.
+							</p>
+						</div>
+						<div class="step">
+							<h5>6) GORM → PostgreSQL</h5>
+							<p>
+								Query/insert/update/delete. Beberapa endpoint menggunakan
+								<span class="mono">Preload()</span> untuk eager loading relasi.
+							</p>
+						</div>
+					</div>
+
+					<div class="callout ok">
+						<strong>Tip</strong>: Referensi detail endpoint dan schema dapat dilihat pada Swagger UI:
+						<a href="/swagger/index.html">/swagger/index.html</a>.
+					</div>
+				</section>
+
+				<section id="validasi" class="section">
+					<h3>Validasi & Error Handling</h3>
+					<p>
+						Validasi dilakukan di beberapa layer: binding tags (request struct), middleware
+						(JWT), dan validasi bisnis di controller (duplikasi & ISO 6346).
+					</p>
+
+					<div class="grid-2">
+						<div class="card">
+							<h4>ISO 6346 — nomor container</h4>
+							<p>
+								Validasi format + check digit dilakukan oleh
+								<span class="mono">utils.IsValidISO6346()</span>.
+							</p>
+							<div class="codeblock">
+								<pre><code>Format: ^[A-Z]{3}[UJZ][0-9]{7}$
+Check digit: sum(weighted) % 11, jika 10 => 0</code></pre>
+							</div>
+							<div class="callout warn">
+								<strong>Error (400)</strong>: <span class="mono">Invalid ISO 6346 container number</span>
+							</div>
+						</div>
+
+						<div class="card">
+							<h4>Duplikasi container number</h4>
+							<p>
+								Dicek pada batch payload dan dicek juga ke DB agar tidak ada
+								<span class="mono">container_number</span> yang sama.
+							</p>
+							<div class="codeblock">
+								<pre><code>Batch:
+1) duplicate within payload => 400
+2) existing in DB => 409
+
+Single:
+existing in DB => 409</code></pre>
+							</div>
+							<div class="callout bad">
+								<strong>Error (409)</strong>:
+								<span class="mono">Container number already exists</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="grid-2 mt12">
+						<div class="card">
+							<h4>Auth request validation (binding tags)</h4>
+							<p>
+								Validasi format email dan minimal password dilakukan lewat binding tags di
+								<span class="mono">models.RegisterRequest</span>.
+							</p>
+							<div class="codeblock">
+								<pre><code>RegisterRequest:
+email: required,email
+password: required,min=6</code></pre>
+							</div>
+						</div>
+
+						<div class="card">
+							<h4>JWT AuthMiddleware</h4>
+							<p>
+								Endpoint protected berada di bawah group <span class="mono">/api</span> dan mewajibkan
+								header <span class="mono">Authorization</span>.
+							</p>
+							<div class="codeblock">
+								<pre><code>Authorization: Bearer &lt;token&gt;
+
+Error:
+- Authorization header is required
+- Authorization header format must be: Bearer &lt;token&gt;
+- Invalid or expired token</code></pre>
+							</div>
+						</div>
+					</div>
+
+					<div class="grid-2 mt12">
+						<div class="card">
+							<h4>Unique constraints master data</h4>
+							<p>
+								Beberapa data master divalidasi unik di controller sebelum insert/update.
+							</p>
+							<div class="codeblock">
+								<pre><code>ContainerType.Code => 409
+Port.Code => 409
+ShippingLine.Code => 409
+Voyage.VoyageNumber => 409</code></pre>
+							</div>
+						</div>
+
+						<div class="card">
+							<h4>CORS</h4>
+							<p>
+								CORS aktif secara global. Preflight <span class="mono">OPTIONS</span> akan dijawab
+								<span class="mono">204 No Content</span>.
+							</p>
+							<div class="codeblock">
+								<pre><code>Env:
+CORS_ORIGIN="*"
+
+Headers:
+Access-Control-Allow-Origin
+Access-Control-Allow-Methods
+Access-Control-Allow-Headers</code></pre>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section id="endpoint" class="section">
+					<h3>Ringkasan Endpoint</h3>
+					<p>Dokumentasi lengkap request/response tersedia di Swagger. Bagian ini ringkasan grup saja.</p>
+
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Group</th>
+								<th>Route</th>
+								<th>Auth</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Health</td>
+								<td><span class="mono">GET /health</span></td>
+								<td><span class="badge ok">Public</span></td>
+							</tr>
+							<tr>
+								<td>Docs</td>
+								<td>
+									<span class="mono">GET /swagger/index.html</span><br />
+									<span class="mono">GET /project-docs</span>
+								</td>
+								<td><span class="badge ok">Public</span></td>
+							</tr>
+							<tr>
+								<td>Auth</td>
+								<td>
+									<span class="mono">POST /api/auth/register</span><br />
+									<span class="mono">POST /api/auth/login</span><br />
+									<span class="mono">GET /api/auth/me</span>
+								</td>
+								<td><span class="badge warn">Mixed</span></td>
+							</tr>
+							<tr>
+								<td>Master Data</td>
+								<td>
+									<span class="mono">/api/container-types</span><br />
+									<span class="mono">/api/ports</span><br />
+									<span class="mono">/api/shipping-lines</span><br />
+									<span class="mono">/api/voyages</span>
+								</td>
+								<td><span class="badge warn">JWT</span></td>
+							</tr>
+							<tr>
+								<td>Containers</td>
+								<td><span class="mono">/api/containers</span></td>
+								<td><span class="badge warn">JWT</span></td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+
+				<section id="env" class="section">
+					<h3>Environment Variables</h3>
+					<p>
+						Docker Compose mendefinisikan env untuk container runtime. Di lokal, beberapa user
+						menggunakan file <span class="mono">core-project/.env</span>.
+					</p>
+
+					<div class="callout warn">
+						<strong>Keamanan</strong>: jangan pernah mempublikasikan credential/secret mentah di
+						dokumentasi. Gunakan placeholder seperti <span class="mono">DB_PASSWORD=&lt;redacted&gt;</span>.
+					</div>
+
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Nama</th>
+								<th>Fungsi</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><span class="mono">APP_PORT</span></td>
+								<td>Port HTTP server (Docker: 8888).</td>
+							</tr>
+							<tr>
+								<td><span class="mono">DB_HOST, DB_PORT</span></td>
+								<td>Host dan port PostgreSQL.</td>
+							</tr>
+							<tr>
+								<td><span class="mono">DB_USER, DB_PASSWORD, DB_NAME</span></td>
+								<td>Kredensial dan nama database.</td>
+							</tr>
+							<tr>
+								<td><span class="mono">JWT_SECRET</span></td>
+								<td>Secret untuk signing token JWT (wajib diganti di production).</td>
+							</tr>
+							<tr>
+								<td><span class="mono">CORS_ORIGIN</span></td>
+								<td>Allowed origin untuk CORS (default <span class="mono">*</span>).</td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+
+				<footer class="footer">
+					Dokumen ini dibuat untuk membantu onboarding dan debugging cepat. Untuk detail schema dan request
+					body, gunakan Swagger UI.
+				</footer>
+			</main>
+		</div>
+	</body>
+</html>
+
