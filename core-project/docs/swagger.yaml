@@ -1,0 +1,1028 @@
+basePath: /
+definitions:
+  models.Container:
+    properties:
+      container_number:
+        type: string
+      container_type_id:
+        type: integer
+      containerType:
+        $ref: '#/definitions/models.ContainerType'
+      created_at:
+        type: string
+      created_by:
+        type: integer
+      id:
+        type: integer
+      port:
+        $ref: '#/definitions/models.Port'
+      port_id:
+        type: integer
+      shipping_line_id:
+        type: integer
+      shippingLine:
+        $ref: '#/definitions/models.ShippingLine'
+      status:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      voyage:
+        $ref: '#/definitions/models.Voyage'
+      voyage_id:
+        type: integer
+    type: object
+  models.ContainerType:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.Port:
+    properties:
+      code:
+        type: string
+      country:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.ShippingLine:
+    properties:
+      code:
+        type: string
+      country:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      role:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.Voyage:
+    properties:
+      created_at:
+        type: string
+      destination_port_id:
+        type: integer
+      destinationPort:
+        $ref: '#/definitions/models.Port'
+      eta:
+        type: string
+      etd:
+        type: string
+      id:
+        type: integer
+      origin_port_id:
+        type: integer
+      originPort:
+        $ref: '#/definitions/models.Port'
+      updated_at:
+        type: string
+      vessel_name:
+        type: string
+      voyage_number:
+        type: string
+    type: object
+host: localhost:8888
+info:
+  contact:
+    email: support@container.local
+    name: API Support
+  description: REST API untuk manajemen container dengan autentikasi JWT.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Container Management API
+  version: "1.0"
+paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate with email and password to receive a JWT token.
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login success, returns token
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Invalid email or password
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login user
+      tags:
+      - Auth
+  /api/auth/me:
+    get:
+      description: Returns the currently authenticated user's info extracted from
+        JWT claims.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Current user info
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get current user
+      tags:
+      - Auth
+  /api/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account with email and password. Password must
+        be at least 6 characters.
+      parameters:
+      - description: User registration payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User registered successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Email is already registered
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - Auth
+  /api/container-types:
+    get:
+      description: Get a list of all container types.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ContainerType'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all container types
+      tags:
+      - Container Types
+    post:
+      consumes:
+      - application/json
+      description: Create a new container type. The `code` field must be unique.
+      parameters:
+      - description: Container type payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.ContainerType'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ContainerType'
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Container type code already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create container type
+      tags:
+      - Container Types
+  /api/container-types/{id}:
+    delete:
+      description: Delete a container type by ID.
+      parameters:
+      - description: Container type ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Container type deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete container type
+      tags:
+      - Container Types
+    get:
+      description: Retrieve a single container type by its ID.
+      parameters:
+      - description: Container type ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ContainerType'
+        "404":
+          description: Container type not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get container type by ID
+      tags:
+      - Container Types
+    put:
+      consumes:
+      - application/json
+      description: Update an existing container type by ID.
+      parameters:
+      - description: Container type ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Container type payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.ContainerType'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Container type updated successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Container type code already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update container type
+      tags:
+      - Container Types
+  /api/containers:
+    get:
+      description: Get a list of all containers, including related master data (type,
+        shipping line, port, voyage, user).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Container'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all containers
+      tags:
+      - Containers
+    post:
+      consumes:
+      - application/json
+      description: Create a single container or a batch of containers. The container
+        number must be valid ISO 6346 and unique.
+      parameters:
+      - description: Container payload (object or array of objects)
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Container(s) created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request or invalid container number
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Container number already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create container(s)
+      tags:
+      - Containers
+  /api/containers/{id}:
+    delete:
+      description: Delete a container by ID.
+      parameters:
+      - description: Container ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Container deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete container
+      tags:
+      - Containers
+    get:
+      description: Retrieve a single container by its ID, including related master
+        data.
+      parameters:
+      - description: Container ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Container'
+        "404":
+          description: Container not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get container by ID
+      tags:
+      - Containers
+    put:
+      consumes:
+      - application/json
+      description: Update an existing container by ID. Validates ISO 6346 format if
+        container number is provided.
+      parameters:
+      - description: Container ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Container payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Container'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Container updated successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request or invalid container number
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update container
+      tags:
+      - Containers
+  /api/ports:
+    get:
+      description: Get a list of all ports.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Port'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all ports
+      tags:
+      - Ports
+    post:
+      consumes:
+      - application/json
+      description: Create a new port. The `code` field must be unique.
+      parameters:
+      - description: Port payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Port'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Port'
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Port code already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create port
+      tags:
+      - Ports
+  /api/ports/{id}:
+    delete:
+      description: Delete a port by ID.
+      parameters:
+      - description: Port ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Port deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete port
+      tags:
+      - Ports
+    get:
+      description: Retrieve a single port by its ID.
+      parameters:
+      - description: Port ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Port'
+        "404":
+          description: Port not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get port by ID
+      tags:
+      - Ports
+    put:
+      consumes:
+      - application/json
+      description: Update an existing port by ID.
+      parameters:
+      - description: Port ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Port payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Port'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Port updated successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Port code already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update port
+      tags:
+      - Ports
+  /api/shipping-lines:
+    get:
+      description: Get a list of all shipping lines.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.ShippingLine'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all shipping lines
+      tags:
+      - Shipping Lines
+    post:
+      consumes:
+      - application/json
+      description: Create a new shipping line. The `code` field must be unique.
+      parameters:
+      - description: Shipping line payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.ShippingLine'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ShippingLine'
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Shipping line code already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create shipping line
+      tags:
+      - Shipping Lines
+  /api/shipping-lines/{id}:
+    delete:
+      description: Delete a shipping line by ID.
+      parameters:
+      - description: Shipping line ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Shipping line deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete shipping line
+      tags:
+      - Shipping Lines
+    get:
+      description: Retrieve a single shipping line by its ID.
+      parameters:
+      - description: Shipping line ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ShippingLine'
+        "404":
+          description: Shipping line not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get shipping line by ID
+      tags:
+      - Shipping Lines
+    put:
+      consumes:
+      - application/json
+      description: Update an existing shipping line by ID.
+      parameters:
+      - description: Shipping line ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Shipping line payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.ShippingLine'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Shipping line updated successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Shipping line code already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update shipping line
+      tags:
+      - Shipping Lines
+  /api/voyages:
+    get:
+      description: Get a list of all voyages, including origin and destination ports.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Voyage'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all voyages
+      tags:
+      - Voyages
+    post:
+      consumes:
+      - application/json
+      description: Create a new voyage. The `voyage_number` field must be unique.
+      parameters:
+      - description: Voyage payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Voyage'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Voyage'
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Voyage number already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create voyage
+      tags:
+      - Voyages
+  /api/voyages/{id}:
+    delete:
+      description: Delete a voyage by ID.
+      parameters:
+      - description: Voyage ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Voyage deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete voyage
+      tags:
+      - Voyages
+    get:
+      description: Retrieve a single voyage by its ID, including origin and destination
+        ports.
+      parameters:
+      - description: Voyage ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Voyage'
+        "404":
+          description: Voyage not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get voyage by ID
+      tags:
+      - Voyages
+    put:
+      consumes:
+      - application/json
+      description: Update an existing voyage by ID.
+      parameters:
+      - description: Voyage ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Voyage payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Voyage'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Voyage updated successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Voyage number already exists
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update voyage
+      tags:
+      - Voyages
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and the JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -12,8 +12,16 @@ import (
 )
 
 // Register creates a new user account.
-// POST /api/auth/register
-// Body: { "email": "...", "password": "..." }
+// @Summary      Register a new user
+// @Description  Create a new user account with email and password. Password must be at least 6 characters.
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request body models.RegisterRequest true "User registration payload"
+// @Success      201 {object} map[string]interface{} "User registered successfully"
+// @Failure      400 {object} map[string]string "Bad request"
+// @Failure      409 {object} map[string]string "Email is already registered"
+// @Router       /api/auth/register [post]
 func Register(c *gin.Context) {
 	var req models.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -57,8 +65,16 @@ func Register(c *gin.Context) {
 }
 
 // Login authenticates a user and returns a signed JWT token.
-// POST /api/auth/login
-// Body: { "email": "...", "password": "..." }
+// @Summary      Login user
+// @Description  Authenticate with email and password to receive a JWT token.
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request body models.LoginRequest true "Login credentials"
+// @Success      200 {object} map[string]interface{} "Login success, returns token"
+// @Failure      400 {object} map[string]string "Bad request"
+// @Failure      401 {object} map[string]string "Invalid email or password"
+// @Router       /api/auth/login [post]
 func Login(c *gin.Context) {
 	var req models.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -99,7 +115,14 @@ func Login(c *gin.Context) {
 }
 
 // Me returns the currently authenticated user's info extracted from JWT.
-// GET /api/auth/me  (protected route)
+// @Summary      Get current user
+// @Description  Returns the currently authenticated user's info extracted from JWT claims.
+// @Tags         Auth
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200 {object} map[string]interface{} "Current user info"
+// @Failure      401 {object} map[string]string "Unauthorized"
+// @Router       /api/auth/me [get]
 func Me(c *gin.Context) {
 	userID, _ := c.Get("userID")
 	email, _ := c.Get("email")

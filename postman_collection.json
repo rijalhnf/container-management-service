@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "Product API — Auth + CRUD",
-    "description": "Collection for the Go Gin Product API with JWT Auth, Middleware & CORS.\n\n**Flow:**\n1. Register → Login (token auto-saved) → Use protected routes\n\nBase URL: `http://localhost:8888`",
+    "name": "Container Management API",
+    "description": "Collection for the Container Management Service with JWT Auth, Middleware & CORS.\n\n**Flow:**\n1. Register → Login (token auto-saved) → Use protected routes\n\nBase URL: `http://localhost:8888`",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -120,14 +120,13 @@
       ]
     },
     {
-      "name": "Products",
+      "name": "Container Types",
       "item": [
         {
-          "name": "Get All Products",
+          "name": "Get All Container Types",
           "request": {
             "method": "GET",
-            "url": "{{base_url}}/api/products",
-            "description": "🔒 Protected — returns all products.",
+            "url": "{{base_url}}/api/container-types",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -142,30 +141,10 @@
           "response": []
         },
         {
-          "name": "Get Product by ID",
-          "request": {
-            "method": "GET",
-            "url": "{{base_url}}/api/products/1",
-            "description": "🔒 Protected — returns a single product by ID. Change `1` to a valid product ID.",
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Product (single)",
+          "name": "Create Container Type",
           "request": {
             "method": "POST",
-            "url": "{{base_url}}/api/products",
-            "description": "🔒 Protected — creates a single product.",
+            "url": "{{base_url}}/api/container-types",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -184,56 +163,16 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Laptop Pro\",\n  \"price\": 1299,\n  \"stock\": 50\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n  \"code\": \"20GP\",\n  \"name\": \"20ft General Purpose\",\n  \"description\": \"Standard 20 foot container\"\n}"
             }
           },
           "response": []
         },
         {
-          "name": "Create Products (batch)",
-          "request": {
-            "method": "POST",
-            "url": "{{base_url}}/api/products",
-            "description": "🔒 Protected — creates multiple products in a single request by sending an array.",
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{token}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "[\n  { \"name\": \"Keyboard\", \"price\": 89, \"stock\": 200 },\n  { \"name\": \"Mouse\", \"price\": 45, \"stock\": 300 },\n  { \"name\": \"Monitor\", \"price\": 399, \"stock\": 75 }\n]",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Product",
+          "name": "Update Container Type",
           "request": {
             "method": "PUT",
-            "url": "{{base_url}}/api/products/1",
-            "description": "🔒 Protected — updates a product by ID. Change `1` to a valid product ID.",
+            "url": "{{base_url}}/api/container-types/1",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -252,7 +191,388 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Laptop Pro Max\",\n  \"price\": 1499,\n  \"stock\": 30\n}",
+              "raw": "{\n  \"name\": \"20ft GP Updated\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Container Type",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/container-types/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ports",
+      "item": [
+        {
+          "name": "Get All Ports",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/ports",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Port",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/ports",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"IDJKT\",\n  \"name\": \"Tanjung Priok\",\n  \"country\": \"Indonesia\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Port",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/ports/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tanjung Priok Port\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Port",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/ports/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Shipping Lines",
+      "item": [
+        {
+          "name": "Get All Shipping Lines",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/shipping-lines",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Shipping Line",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/shipping-lines",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"MSK\",\n  \"name\": \"Maersk Line\",\n  \"country\": \"Denmark\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Shipping Line",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/shipping-lines/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Maersk Line Updated\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Shipping Line",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/shipping-lines/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Voyages",
+      "item": [
+        {
+          "name": "Get All Voyages",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/voyages",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Voyage",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/voyages",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"voyage_number\": \"V123\",\n  \"vessel_name\": \"Ever Given\",\n  \"origin_port_id\": 1,\n  \"destination_port_id\": 2,\n  \"eta\": \"2024-12-31T23:59:59Z\",\n  \"etd\": \"2024-12-01T00:00:00Z\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Voyage",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/voyages/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vessel_name\": \"Ever Given Updated\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Voyage",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/voyages/1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Containers",
+      "item": [
+        {
+          "name": "Get All Containers",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/containers",
+            "description": "🔒 Protected — returns all containers.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Container by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/containers/1",
+            "description": "🔒 Protected — returns a single container by ID. Change `1` to a valid container ID.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Container (single)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/containers",
+            "description": "🔒 Protected — creates a single container.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"container_number\": \"CONT123456\",\n  \"container_type_id\": 1,\n  \"shipping_line_id\": 1,\n  \"port_id\": 1,\n  \"voyage_id\": 1,\n  \"status\": \"ARRIVED\",\n  \"created_by\": 1\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -263,11 +583,79 @@
           "response": []
         },
         {
-          "name": "Delete Product",
+          "name": "Create Containers (batch)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/containers",
+            "description": "🔒 Protected — creates multiple containers in a single request by sending an array.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  { \"container_number\": \"CONT000001\", \"container_type_id\": 1, \"shipping_line_id\": 1, \"port_id\": 1, \"voyage_id\": 1, \"status\": \"ARRIVED\", \"created_by\": 1 },\n  { \"container_number\": \"CONT000002\", \"container_type_id\": 2, \"shipping_line_id\": 2, \"port_id\": 2, \"voyage_id\": 2, \"status\": \"IN_TRANSIT\", \"created_by\": 1 },\n  { \"container_number\": \"CONT000003\", \"container_type_id\": 1, \"shipping_line_id\": 1, \"port_id\": 1, \"voyage_id\": 1, \"status\": \"DEPARTED\", \"created_by\": 1 }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Container",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/containers/1",
+            "description": "🔒 Protected — updates a container by ID. Change `1` to a valid container ID.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_TRANSIT\",\n  \"voyage_id\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Container",
           "request": {
             "method": "DELETE",
-            "url": "{{base_url}}/api/products/1",
-            "description": "🔒 Protected — deletes a product by ID. Change `1` to a valid product ID.",
+            "url": "{{base_url}}/api/containers/1",
+            "description": "🔒 Protected — deletes a container by ID. Change `1` to a valid container ID.",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -290,7 +678,7 @@
           "name": "No Token → 401",
           "request": {
             "method": "GET",
-            "url": "{{base_url}}/api/products",
+            "url": "{{base_url}}/api/containers",
             "description": "Expected: 401 — \"Authorization header is required\""
           },
           "response": []
@@ -299,7 +687,7 @@
           "name": "Invalid Token → 401",
           "request": {
             "method": "GET",
-            "url": "{{base_url}}/api/products",
+            "url": "{{base_url}}/api/containers",
             "description": "Expected: 401 — \"Invalid or expired token\"",
             "auth": {
               "type": "bearer",

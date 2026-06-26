@@ -1,3 +1,22 @@
+// @title           Container Management API
+// @version         1.0
+// @description     REST API untuk manajemen container dengan autentikasi JWT.
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.email  support@container.local
+
+// @license.name  MIT
+// @license.url   https://opensource.org/licenses/MIT
+
+// @host      localhost:8888
+// @BasePath  /
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and the JWT token.
+
 package main
 
 import (
@@ -16,7 +35,8 @@ import (
 func main() {
 
 	config.ConnectDatabase()
-	config.DB.AutoMigrate(&models.User{}, &models.Product{})
+	config.DB.AutoMigrate(&models.User{}, 
+		&models.ContainerType{}, &models.ShippingLine{}, &models.Port{}, &models.Voyage{}, &models.Container{})
 
 	r := gin.Default()
 	r.SetTrustedProxies([]string{"127.0.0.1"})

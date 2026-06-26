@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"go-gin-postgre-crud/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -27,6 +28,20 @@ func ConnectDatabase() {
 
 	DB = database
 	fmt.Println("Database connection established")
+
+	// Auto-migrate all models
+	err = database.AutoMigrate(
+		&models.User{},
+		&models.ContainerType{},
+		&models.ShippingLine{},
+		&models.Port{},
+		&models.Voyage{},
+		&models.Container{},
+	)
+	if err != nil {
+		log.Fatal("Failed to run migrations:", err)
+	}
+	fmt.Println("Database migrations completed")
 }
 
 // CREATE TABLE users (
