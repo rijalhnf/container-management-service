@@ -5,11 +5,18 @@ import (
 	"go-gin-postgre-crud/middleware"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "go-gin-postgre-crud/docs"
 )
 
 func SetupRoutes(router *gin.Engine) {
 	// Apply CORS globally — handles preflight OPTIONS on all routes
 	router.Use(middleware.CORSMiddleware())
+
+	// Swagger UI — publicly accessible
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Public health check
 	router.GET("/health", func(c *gin.Context) {
@@ -31,12 +38,46 @@ func SetupRoutes(router *gin.Engine) {
 		// Auth
 		api.GET("/auth/me", controllers.Me) // GET /api/auth/me
 
-		// PRODUCT ROUTES
-		api.GET("products", controllers.GetProducts)          // GET    /api/products
-		api.GET("products/:id", controllers.GetProductByID)   // GET    /api/products/:id
-		api.POST("products", controllers.CreateProduct)       // POST   /api/products
-		api.PUT("products/:id", controllers.UpdateProduct)    // PUT    /api/products/:id
-		api.DELETE("products/:id", controllers.DeleteProduct) // DELETE /api/products/:id
+		// Container Types
+		containerType := api.Group("/container-types")
+		{
+			containerType.GET("", controllers.GetContainerTypes)          // GET    /api/container-types
+			containerType.GET("/:id", controllers.GetContainerTypeByID)   // GET    /api/container-types/:id
+			containerType.POST("", controllers.CreateContainerType)       // POST   /api/container-types
+			containerType.PUT("/:id", controllers.UpdateContainerType)    // PUT    /api/container-types/:id
+			containerType.DELETE("/:id", controllers.DeleteContainerType) // DELETE /api/container-types/:id
+		}
+
+		// Ports
+		port := api.Group("/ports")
+		{
+			port.GET("", controllers.GetPorts)          // GET    /api/ports
+			port.GET("/:id", controllers.GetPortByID)   // GET    /api/ports/:id
+			port.POST("", controllers.CreatePort)       // POST   /api/ports
+			port.PUT("/:id", controllers.UpdatePort)    // PUT    /api/ports/:id
+			port.DELETE("/:id", controllers.DeletePort) // DELETE /api/ports/:id
+		}
+
+		// Shipping Lines
+		shippingLine := api.Group("/shipping-lines")
+		{
+			shippingLine.GET("", controllers.GetShippingLines)          // GET    /api/shipping-lines
+			shippingLine.GET("/:id", controllers.GetShippingLineByID)   // GET    /api/shipping-lines/:id
+			shippingLine.POST("", controllers.CreateShippingLine)       // POST   /api/shipping-lines
+			shippingLine.PUT("/:id", controllers.UpdateShippingLine)    // PUT    /api/shipping-lines/:id
+			shippingLine.DELETE("/:id", controllers.DeleteShippingLine) // DELETE /api/shipping-lines/:id
+		}
+
+		// Voyages
+		voyage := api.Group("/voyages")
+		{
+			voyage.GET("", controllers.GetVoyages)          // GET    /api/voyages
+			voyage.GET("/:id", controllers.GetVoyageByID)   // GET    /api/voyages/:id
+			voyage.POST("", controllers.CreateVoyage)       // POST   /api/voyages
+			voyage.PUT("/:id", controllers.UpdateVoyage)    // PUT    /api/voyages/:id
+			voyage.DELETE("/:id", controllers.DeleteVoyage) // DELETE /api/voyages/:id
+		}
+
 		container := api.Group("/containers")
 		{
 			container.GET("", controllers.GetContainers)          // GET    /api/containers

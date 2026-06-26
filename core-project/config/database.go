@@ -32,7 +32,6 @@ func ConnectDatabase() {
 	// Auto-migrate all models
 	err = database.AutoMigrate(
 		&models.User{},
-		&models.Product{},
 		&models.ContainerType{},
 		&models.ShippingLine{},
 		&models.Port{},
